@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { forwardRef } from "react";
 
 interface ProjectInputProps {
   inputType: "input" | "textarea" | "date";
@@ -7,21 +7,47 @@ interface ProjectInputProps {
   id: string;
 }
 
-interface InputComponentProps {
-  inputType: "input" | "textarea" | "date";
-  placeholder?: string;
-  id: string;
-}
+const ProjectInput = forwardRef(function ProjectInput(
+  { inputType, inputLabel, placeholder, id }: ProjectInputProps,
+  ref
+) {
+  const classes =
+    "w-full p-1 border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600";
 
-export default function ProjectInput({
-  inputType,
-  inputLabel,
-  placeholder,
-  id,
-}: ProjectInputProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const dateRef = useRef<HTMLInputElement>(null);
+  let input: HTMLInputElement | HTMLTextAreaElement;
+  switch (inputType) {
+    case "input":
+      input = (
+        <input
+          type="text"
+          id={id}
+          placeholder={placeholder}
+          className={classes}
+          ref={ref as React.RefObject<HTMLInputElement>}
+        />
+      ) as unknown as HTMLInputElement;
+      break;
+    case "textarea":
+      input = (
+        <textarea
+          id={id}
+          placeholder={placeholder}
+          ref={ref as React.RefObject<HTMLTextAreaElement>}
+          className={classes}
+        />
+      ) as unknown as HTMLTextAreaElement;
+      break;
+    case "date":
+      input = (
+        <input
+          type="date"
+          id={id}
+          ref={ref as React.RefObject<HTMLInputElement>}
+          className={classes}
+        />
+      ) as unknown as HTMLInputElement;
+      break;
+  }
   return (
     <p className="flex flex-col gap-1 my-4">
       <label
@@ -30,38 +56,9 @@ export default function ProjectInput({
       >
         {inputLabel}
       </label>
-      <InputComponent inputType={inputType} placeholder={placeholder} id={id} />
+      {<>{input}</>}
     </p>
   );
-}
+});
 
-function InputComponent({ inputType, placeholder, id }: InputComponentProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-  const dateRef = useRef<HTMLInputElement>(null);
-  const classes = "w-full p-1 border-b-2 rounded-sm border-stone-300 bg-stone-200 text-stone-600 focus:outline-none focus:border-stone-600"
-
-  switch (inputType) {
-    case "input":
-      return (
-        <input
-          type="text"
-          id={id}
-          placeholder={placeholder}
-          ref={inputRef}
-          className={classes}
-        />
-      );
-    case "textarea":
-      return (
-        <textarea
-          id={id}
-          placeholder={placeholder}
-          ref={textareaRef}
-          className={classes}
-        />
-      );
-    case "date":
-      return <input type="date" id={id} ref={dateRef} className={classes} />;
-  }
-}
+export default ProjectInput;
