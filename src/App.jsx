@@ -1,8 +1,15 @@
+import React from "react";
+import ProjectsSidebar from "./components/ProjectsSidebar";
+// import NewProject from "./components/NewProject";
+import NoProjectSelected from "./components/NoProjectSelected";
+
 function App() {
   return (
-    <>
-      <h1 className="my-8 text-center text-5xl font-bold">Hello World</h1>
-    </>
+    <main className="flex h-screen gap-8 py-8 ">
+      <ProjectsSidebar />
+      <NoProjectSelected />
+      {/* <NewProject /> */}
+    </main>
   );
 }
 
