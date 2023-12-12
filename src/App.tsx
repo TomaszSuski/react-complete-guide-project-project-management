@@ -41,6 +41,7 @@ function App() {
       ...prevProjectsList,
       { ...project, id: newId } as Project,
     ]);
+    setCurrentContent("noProject");
   };
 
   let content: JSX.Element = <></>; // Initialize with a default value

@@ -13,7 +13,7 @@ export default function SingleProjectView({
   deleteHandler,
 }: SingleProjectViewProps) {
   return (
-    <div className="flex flex-col items-center justify-center w-full">
+    <div className="flex flex-col items-center justify-center w-full gap-4">
       <h1 className="text-2xl font-bold text-stone-800">{project.title}</h1>
       <p className="text-sm text-stone-600">{project.description}</p>
       <p className="text-sm text-stone-600">
