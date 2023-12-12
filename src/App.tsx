@@ -5,6 +5,8 @@ import NoProjectSelected from "./components/NoProjectSelected";
 import Project from "./models/Project";
 import { ProjectsList } from "./models/ProjectsList";
 import SingleProjectView from "./components/SingleProjectView";
+import { getNextId } from "./helpers";
+import Task from "./models/Task";
 
 type CurrentContent = "newProject" | "noProject" | "singleProject";
 
@@ -33,15 +35,45 @@ function App() {
     setCurrentContent("noProject");
   };
   const addNewProjectHandler = (project: Project) => {
-    const newId =
-      projectsList.length > 0
-        ? projectsList[projectsList.length - 1]?.id + 1
-        : 1;
+    const newId = getNextId(projectsList);
     setProjectsList((prevProjectsList) => [
       ...prevProjectsList,
-      { ...project, id: newId } as Project,
+      { ...project, id: newId, tasks: [] } as Project,
     ]);
     setCurrentContent("noProject");
+  };
+
+  const addTaskHandler = (projectId: number, task: Task) => {
+    const newProjectsList = projectsList.map((project) => {
+      if (project.id === projectId) {
+        project.tasks.push(task);
+      }
+      return project;
+    });
+    setProjectsList(newProjectsList);
+  };
+  const deleteTaskHandler = (projectId: number, taskId: number) => {
+    const newProjectsList = projectsList.map((project) => {
+      if (project.id === projectId) {
+        project.tasks = project.tasks.filter((task) => task.id !== taskId);
+      }
+      return project;
+    });
+    setProjectsList(newProjectsList);
+  };
+  const toggleCompletedHandler = (projectId: number, taskId: number) => {
+    const newProjectsList = projectsList.map((project) => {
+      if (project.id === projectId) {
+        project.tasks = project.tasks.map((task) => {
+          if (task.id === taskId) {
+            task.completed = !task.completed;
+          }
+          return task;
+        });
+      }
+      return project;
+    });
+    setProjectsList(newProjectsList);
   };
 
   let content: JSX.Element = <></>; // Initialize with a default value
@@ -60,7 +92,14 @@ function App() {
     case "singleProject":
       if (project) {
         content = (
-          <SingleProjectView project={project} closeHandler={closeHandler} deleteHandler={deleteProjectHandler} />
+          <SingleProjectView
+            project={project}
+            closeHandler={closeHandler}
+            deleteHandler={deleteProjectHandler}
+            addTaskHandler={addTaskHandler}
+            deleteTaskHandler={deleteTaskHandler}
+            toggleCompletedHandler={toggleCompletedHandler}
+          />
         );
       }
       break; // Add break statement to prevent fall-through
